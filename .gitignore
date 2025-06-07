@@ -1,0 +1,36 @@
+# Node modules (nunca subir)
+node_modules/
+
+# Builds de producción
+dist/
+
+# Archivos temporales del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de logs
+*.log
+npm-debug.log*
+
+# Archivos del entorno local
+.env
+.env.local
+.env.*.local
+
+# Archivos de lock (opcional: podrías subir uno si usas yarn/npm ci consistentemente)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Archivos de configuración de IDE (VSCode, JetBrains, etc)
+.vscode/
+.idea/
+
+# Salida de pruebas
+coverage/
+
+# Cache de Vite
+.vite/
+
+# Cache de TypeScript
+*.tsbuildinfo
