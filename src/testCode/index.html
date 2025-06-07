@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piedra, Papel o Tijeras - Web3</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Pantalla 1: Conectar Wallet -->
+        <div id="screen-connect" class="screen active">
+            <h2>Conectar con MetaMask</h2>
+            <button id="connect-btn" class="btn">Conectar</button>
+        </div>
+
+        <!-- Pantalla 2: Seleccionar Monto -->
+        <div id="screen-amount" class="screen">
+            <h2>Selecciona el monto</h2>
+            <div class="amount-buttons">
+                <button data-amount="0.1" class="btn amount-btn">0.1 AVAX</button>
+                <button data-amount="0.5" class="btn amount-btn">0.5 AVAX</button>
+            </div>
+        </div>
+
+        <!-- Pantalla 3: Jugar -->
+        <div id="screen-game" class="screen">
+            <h2>Jugar por <span id="amount-selected">0.1</span> AVAX</h2>
+            <div class="choices">
+                <div data-choice="rock" class="choice-card">
+                    <img src="piedra.jpg" alt="Piedra">
+                    <span>Piedra</span>
+                </div>
+                <div data-choice="paper" class="choice-card">
+                    <img src="papel.jpg" alt="Papel">
+                    <span>Papel</span>
+                </div>
+                <div data-choice="scissors" class="choice-card">
+                    <img src="tijera.jpg" alt="Tijera">
+                    <span>Tijera</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Incluimos ethers.js para interactuar con MetaMask -->
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+    <!-- Sherry SDK (versión para navegador) -->
+    <script src="https://unpkg.com/@sherrylinks/sdk/dist/sherry-sdk.umd.js"></script>
+    <!-- Nuestro script principal -->
+    <script src="app.js"></script>
+</body>
+</html>

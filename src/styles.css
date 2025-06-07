@@ -1,0 +1,63 @@
+:root {
+  --primary: #1c3045;
+  --secondary: #dee09c;
+  --background: #1c3045;
+  --text: #dee09c;
+}
+
+.app-container {
+  background-color: var(--background);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.screen {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.wallet-btn, .amount-buttons button {
+  background-color: var(--primary);
+  color: var(--secondary);
+  border: none;
+  padding: 15px 30px;
+  margin: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+.choices {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 40px;
+}
+
+.choice-card {
+  background-color: rgba(222, 224, 156, 0.1);
+  border: 2px solid var(--secondary);
+  border-radius: 12px;
+  padding: 15px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.choice-card:hover {
+  transform: scale(1.05);
+}
+
+.choice-card img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.result {
+  margin-top: 40px;
+  font-size: 24px;
+}

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import WalletConnector from './components/WalletConnector';
 import AmountSelector from './components/AmountSelector';
 import GameScreen from './components/GameScreen';
+import './styles.css';
 
 function App() {
   const [step, setStep] = useState(1);
