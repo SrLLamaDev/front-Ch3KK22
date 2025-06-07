@@ -373,6 +373,7 @@
                 <div class="choices-result">
                     <div class="player-choice">
                         <div>Tu elección</div>
+                        <!--! link del src = https://cdn-icons-png.flaticon.com/512/3185/3185762.png-->
                         <img id="player-choice-img" src="interrogacion.png" alt="Elección">
                         <div id="player-choice-name">...</div>
                     </div>
@@ -381,6 +382,7 @@
                     
                     <div class="opponent-choice">
                         <div>Contrato</div>
+                        <!--! link del src = https://cdn-icons-png.flaticon.com/512/3163/3163473.png-->
                         <img id="opponent-choice-img" src="interrogacion.png" alt="Elección">
                         <div id="opponent-choice-name">...</div>
                     </div>
