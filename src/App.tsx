@@ -1,5 +1,5 @@
 // App.tsx
-import { useState } from 'react';
+import { useState } from 'react'; 
 import WalletConnector from './components/WalletConnector';
 import AmountSelector from './components/AmountSelector';
 import GameScreen from './components/GameScreen';
