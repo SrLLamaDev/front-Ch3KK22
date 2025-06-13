@@ -2,39 +2,42 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Subscription Payment Layer - Dashboard</title>
+    <title>Subscription Payment Layer - Connect Wallet</title>
 </head>
 <body>
-    <h2>Dashboard de Suscripciones</h2>
-    <ul id="subscriptionList"></ul>
-    <button id="btnLogout">Cerrar sesión</button>
+    <h2>Conectar Wallet</h2>
+    <button id="btnConnect">Connect MetaMask</button>
 
-    <script src="app.js"></script>
-    <script>
+    <!-- Ethers.js -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
+    <!-- ABI y Address del contrato -->
+    <script type="module">
+        import { CONTRACT_ABI, CONTRACT_ADDRESS } from './abi.js';
+        import { initApp } from './app.js';
+
         window.addEventListener('load', async () => {
-            const userAddress = sessionStorage.getItem('userAddress');
-            if (!userAddress) {
-                window.location.href = 'index.html';
+            if (typeof window.ethereum === 'undefined') {
+                alert('Por favor instala MetaMask para usar esta aplicación.');
                 return;
             }
 
-            // Obtener y mostrar suscripciones
-            const list = document.getElementById('subscriptionList');
-            const subs = await window.getSubscriptions(userAddress);
-            if (subs.length === 0) {
-                list.innerHTML = '<li>No tienes suscripciones activas.</li>';
-            } else {
-                subs.forEach((sub, idx) => {
-                    const li = document.createElement('li');
-                    li.textContent = `#${idx + 1}: ${sub.amount} every ${sub.interval} days (${sub.active ? 'active' : 'inactive'})`;
-                    list.appendChild(li);
-                });
-            }
-
-            // Logout
-            document.getElementById('btnLogout').addEventListener('click', () => {
-                sessionStorage.removeItem('userAddress');
-                window.location.href = 'index.html';
+            const btn = document.getElementById('btnConnect');
+            btn.addEventListener('click', async () => {
+                try {
+                    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                    const userAddress = accounts[0];
+                    sessionStorage.setItem('userAddress', userAddress);
+                    // Inicializar la app con provider, ABI y address
+                    await initApp({
+                        provider: new ethers.providers.Web3Provider(window.ethereum),
+                        abi: CONTRACT_ABI,
+                        contractAddress: CONTRACT_ADDRESS
+                    });
+                    window.location.href = 'subscribe.html';
+                } catch (error) {
+                    console.error('Error al conectar MetaMask:', error);
+                    alert('No se pudo conectar MetaMask.');
+                }
             });
         });
     </script>

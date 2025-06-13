@@ -1,93 +1,47 @@
 // app.js - Lógica compartida para Subscription Payment Layer
 
-// Importa ethers si usas un bundler o mantén la referencia en HTML:
-// <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
+let provider;
+let signer;
+let contract;
 
-(async () => {
-    // Inicializar provider y signer
-    if (typeof window.ethereum === 'undefined') {
-        console.error('MetaMask no instalado');
-        return;
-    }
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
+/**
+ * Inicializa la conexión con el contrato
+ * @param {{provider: any, abi: any[], contractAddress: string}} config
+ */
+export async function initApp({ provider: prov, abi, contractAddress }) {
+  provider = prov;
+  signer = provider.getSigner();
+  contract = new ethers.Contract(contractAddress, abi, signer);
+}
 
-    // Dirección y ABI del contrato (reemplaza con tus datos)
-    const CONTRACT_ADDRESS = '<DIRECCIÓN_CONTRATO>'; // p.ej. '0x1234...';
-    const CONTRACT_ABI = [
-        // Pega aquí el ABI JSON de tu contrato
-    ];
+/**
+ * Crea una nueva suscripción en el contrato
+ * @param {string} amount - Monto en unidades de token (string con decimales)
+ * @param {number} interval - Intervalo en días
+ */
+export async function createSubscription(amount, interval) {
+  if (!contract) throw new Error('Contrato no inicializado');
+  // Convierte a wei (18 decimales)
+  const value = ethers.utils.parseUnits(amount.toString(), 18);
+  // Convierte días a segundos
+  const secs = interval * 24 * 60 * 60;
+  const tx = await contract.createSubscription(value, secs);
+  await tx.wait();
+  return tx;
+}
 
-    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-
-    // Función para crear suscripción
-    window.createSubscription = async (amount, interval) => {
-        try {
-            const tx = await contract.createSubscription(
-                ethers.utils.parseUnits(amount.toString(), 18),
-                interval
-            );
-            await tx.wait();
-            alert('Suscripción creada con éxito');
-        } catch (err) {
-            console.error('Error creando suscripción:', err);
-            alert('Error al crear suscripción');
-        }
-    };
-
-    // Función para obtener todas las suscripciones del usuario
-    window.getSubscriptions = async (userAddress) => {
-        try {
-            const subs = await contract.getUserSubscriptions(userAddress);
-            return subs.map(s => ({
-                amount: ethers.utils.formatUnits(s.amount, 18),
-                interval: s.interval.toNumber(),
-                active: s.active
-            }));
-        } catch (err) {
-            console.error('Error al obtener suscripciones:', err);
-            return [];
-        }
-    };
-
-    // Manejo de flujo por página
-    const pathname = window.location.pathname.split('/').pop();
-    const userAddress = sessionStorage.getItem('userAddress');
-
-    if (!userAddress) {
-        window.location.href = 'index.html';
-        return;
-    }
-
-    if (pathname === 'subscribe.html') {
-        document.getElementById('btnCreateSub').addEventListener('click', async () => {
-            const amount = document.getElementById('amount').value;
-            const interval = parseInt(document.getElementById('interval').value, 10);
-            if (!amount || !interval) {
-                alert('Completa todos los campos');
-                return;
-            }
-            await window.createSubscription(amount, interval);
-            window.location.href = 'dashboard.html';
-        });
-    }
-
-    if (pathname === 'dashboard.html') {
-        const list = document.getElementById('subscriptionList');
-        const subs = await window.getSubscriptions(userAddress);
-        if (subs.length === 0) {
-            list.innerHTML = '<li>No tienes suscripciones activas.</li>';
-        } else {
-            subs.forEach((sub, idx) => {
-                const li = document.createElement('li');
-                li.textContent = `#${idx + 1}: ${sub.amount} every ${sub.interval} days (${sub.active ? 'active' : 'inactive'})`;
-                list.appendChild(li);
-            });
-        }
-
-        document.getElementById('btnLogout').addEventListener('click', () => {
-            sessionStorage.removeItem('userAddress');
-            window.location.href = 'index.html';
-        });
-    }
-})();
+/**
+ * Obtiene las suscripciones de un usuario
+ * @param {string} userAddress
+ * @returns {Promise<Array<{amount:string, interval:number, nextPayment:number, active:boolean}>>}
+ */
+export async function getSubscriptions(userAddress) {
+  if (!contract) throw new Error('Contrato no inicializado');
+  const subs = await contract.getUserSubscriptions(userAddress);
+  return subs.map(s => ({
+    amount: ethers.utils.formatUnits(s.amount, 18),
+    interval: s.interval.toNumber() / (24 * 60 * 60), // devuelve en días
+    nextPayment: s.nextPayment.toNumber(),
+    active: s.active
+  }));
+}

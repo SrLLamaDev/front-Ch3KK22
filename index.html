@@ -8,9 +8,13 @@
     <h2>Conectar Wallet</h2>
     <button id="btnConnect">Connect MetaMask</button>
 
-    <script src="app.js"></script>
-    <script>
-        // Verificar si MetaMask está disponible
+    <!-- Ethers.js -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
+    <!-- ABI y Address del contrato -->
+    <script type="module">
+        import { CONTRACT_ABI, CONTRACT_ADDRESS } from './abi.js';
+        import { initApp } from './app.js';
+
         window.addEventListener('load', async () => {
             if (typeof window.ethereum === 'undefined') {
                 alert('Por favor instala MetaMask para usar esta aplicación.');
@@ -20,12 +24,15 @@
             const btn = document.getElementById('btnConnect');
             btn.addEventListener('click', async () => {
                 try {
-                    // Solicitar conexión de cuentas
                     const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
                     const userAddress = accounts[0];
-                    // Guardar dirección en sessionStorage
                     sessionStorage.setItem('userAddress', userAddress);
-                    // Redirigir a página de suscripción
+                    // Inicializar la app con provider, ABI y address
+                    await initApp({
+                        provider: new ethers.providers.Web3Provider(window.ethereum),
+                        abi: CONTRACT_ABI,
+                        contractAddress: CONTRACT_ADDRESS
+                    });
                     window.location.href = 'subscribe.html';
                 } catch (error) {
                     console.error('Error al conectar MetaMask:', error);
@@ -36,4 +43,3 @@
     </script>
 </body>
 </html>
-
