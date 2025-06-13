@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Subscription Payment Layer - Dashboard</title>
+</head>
+<body>
+    <h2>Dashboard de Suscripciones</h2>
+    <ul id="subscriptionList"></ul>
+    <button id="btnLogout">Cerrar sesión</button>
+
+    <script src="app.js"></script>
+    <script>
+        window.addEventListener('load', async () => {
+            const userAddress = sessionStorage.getItem('userAddress');
+            if (!userAddress) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Obtener y mostrar suscripciones
+            const list = document.getElementById('subscriptionList');
+            const subs = await window.getSubscriptions(userAddress);
+            if (subs.length === 0) {
+                list.innerHTML = '<li>No tienes suscripciones activas.</li>';
+            } else {
+                subs.forEach((sub, idx) => {
+                    const li = document.createElement('li');
+                    li.textContent = `#${idx + 1}: ${sub.amount} every ${sub.interval} days (${sub.active ? 'active' : 'inactive'})`;
+                    list.appendChild(li);
+                });
+            }
+
+            // Logout
+            document.getElementById('btnLogout').addEventListener('click', () => {
+                sessionStorage.removeItem('userAddress');
+                window.location.href = 'index.html';
+            });
+        });
+    </script>
+</body>
+</html>

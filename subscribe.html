@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Subscription Payment Layer - Suscripción</title>
+</head>
+<body>
+    <h2>Crear Suscripción</h2>
+    <label for="amount">Monto (en stablecoin):</label><br>
+    <input type="number" id="amount" placeholder="Ej. 10.00"><br><br>
+
+    <label for="interval">Frecuencia (días):</label><br>
+    <input type="number" id="interval" placeholder="Ej. 30"><br><br>
+
+    <button id="btnCreateSub">Suscribirse</button>
+
+    <script src="app.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            const userAddress = sessionStorage.getItem('userAddress');
+            if (!userAddress) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            document.getElementById('btnCreateSub').addEventListener('click', async () => {
+                const amount = document.getElementById('amount').value;
+                const interval = document.getElementById('interval').value;
+                if (!amount || !interval) {
+                    alert('Completa todos los campos');
+                    return;
+                }
+                try {
+                    await window.createSubscription(amount, parseInt(interval, 10));
+                    window.location.href = 'dashboard.html';
+                } catch (error) {
+                    console.error('Error al suscribirse:', error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
