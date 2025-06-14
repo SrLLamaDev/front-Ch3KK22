@@ -30,11 +30,9 @@ export async function createSubscription(amount, interval) {
   return tx;
 }
 
-/**
- * Obtiene las suscripciones de un usuario
- * @param {string} userAddress
- * @returns {Promise<Array<{amount:string, interval:number, nextPayment:number, active:boolean}>>}
- */
+// No es necesario mejorar nada en el bloque seleccionado, ya que solo es un comentario JSDoc que documenta la función getSubscriptions.
+// El código ya está correcto y sirve para que editores y herramientas de tipado entiendan la estructura del retorno.
+// No afecta la funcionalidad del código.
 export async function getSubscriptions(userAddress) {
   if (!contract) throw new Error('Contrato no inicializado');
   const subs = await contract.getUserSubscriptions(userAddress);
